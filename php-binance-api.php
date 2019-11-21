@@ -27,9 +27,9 @@ if (version_compare(phpversion(), '7.0', '<=')) {
  */
 class API
 {
-    protected $base = 'https://api.binance.com/api/'; // /< REST endpoint for the currency exchange
-    protected $wapi = 'https://api.binance.com/wapi/'; // /< REST endpoint for the withdrawals
-    protected $stream = 'wss://stream.binance.com:9443/ws/'; // /< Endpoint for establishing websocket connections
+    protected $base = 'https://api.binance.us/api/'; // /< REST endpoint for the currency exchange
+    protected $wapi = 'https://api.binance.us/wapi/'; // /< REST endpoint for the withdrawals
+    protected $stream = 'wss://stream.binance.us:9443/ws/'; // /< Endpoint for establishing websocket connections
     protected $api_key; // /< API key that you created in the binance website member area
     protected $api_secret; // /< API secret that was given to you when you created the api key
     protected $depthCache = []; // /< Websockets depth cache
@@ -50,9 +50,9 @@ class API
     private $btc_total = 0.00;
 
     // /< value of available onOrder assets
-    
+
     protected $exchangeInfo = NULL;
-    
+
     /**
      * Constructor for the class,
      * send as many argument as you want.
@@ -324,8 +324,8 @@ class API
     {
         return $this->order("BUY", $symbol, $quantity, 0, "MARKET", $flags, true);
     }
-	
-	
+
+
     /**
      * numberOfDecimals() returns the signifcant digits level based on the minimum order amount.
      *
@@ -336,7 +336,7 @@ class API
      */
     public function numberOfDecimals($val = 0.00000001) {
         $val = sprintf("%.18f", $val);
-        $parts = explode('.', $val); 
+        $parts = explode('.', $val);
         $parts[1] = rtrim($parts[1], "0");
         return strlen($parts[1]);
     }
@@ -450,15 +450,15 @@ class API
      */
     public function orders(string $symbol, int $limit = 500, int $fromOrderId = 1, array $params = [])
     {
-        
+
         $parameters = [
             "symbol" => $symbol,
             "limit" => $limit,
         ];
         if($fromOrderId > 0) $parameters[] = ["orderId" => $fromOrderId];
-        
+
         $parameters = array_merge($parameters, $params);
-        
+
         return $this->httpRequest("v3/allOrders", "GET", $parameters, true);
     }
 
@@ -529,18 +529,18 @@ class API
     public function exchangeInfo()
     {
         if(!$this->exchangeInfo){
-            
+
             $arr = $this->httpRequest("v1/exchangeInfo");
-            
+
             $this->exchangeInfo = $arr;
             $this->exchangeInfo['symbols'] = null;
-            
+
             foreach($arr['symbols'] as $key => $value){
                 $this->exchangeInfo['symbols'][$value['symbol']] = $value;
             }
-            
+
         }
-        
+
         return $this->exchangeInfo;
     }
 
@@ -887,7 +887,7 @@ class API
      * @see buy()
      * @see sell()
      * @see marketBuy()
-     * @see marketSell() $this->httpRequest( "https://api.binance.com/api/v1/ticker/24hr");
+     * @see marketSell() $this->httpRequest( "https://api.binance.us/api/v1/ticker/24hr");
      *
      * @param $url string the endpoint to query, typically includes query string
      * @param $method string this should be typically GET, POST or DELETE
@@ -1022,7 +1022,7 @@ class API
      * @see buy()
      * @see sell()
      * @see marketBuy()
-     * @see marketSell() $this->httpRequest( "https://api.binance.com/api/v1/ticker/24hr");
+     * @see marketSell() $this->httpRequest( "https://api.binance.us/api/v1/ticker/24hr");
      *
      * @param $side string typically "BUY" or "SELL"
      * @param $symbol string to buy or sell
@@ -2323,10 +2323,10 @@ class API
         fwrite($fp, $result);
         fclose($fp);
     }
-    
+
     private function floorDecimal($n, $decimals=2)
-    {   
+    {
         return floor($n * pow(10, $decimals)) / pow(10, $decimals);
     }
-    
+
 }
